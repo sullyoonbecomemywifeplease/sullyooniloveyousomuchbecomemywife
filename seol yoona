@@ -397,7 +397,7 @@
   </div>
 
   <!-- NAVBAR UTAMA -->
-  <div class="navbar">
+  <div class="navbar" id="mainNavbar">
     <button class="nav-btn active" onclick="switchTab('homeTab', this)">Home</button>
     <button class="nav-btn" onclick="switchTab('kelasXTab', this)">Kelas X</button>
     <button class="nav-btn" onclick="switchTab('kelasXITab', this)">Kelas XI</button>
@@ -454,40 +454,10 @@
       </marquee>
       <div class="datetime"></div>
 
-      <!-- JAM KE-1 -->
+      <!-- ASESMEN KELAS XII -->
       <div class="jadwal">
-        <div class="label" onclick="toggle(this)">Jam ke-1</div>
-        <div class="content">
-          <button onclick="openExam('https://docs.google.com/forms/d/e/1FAIpQLSeBRG6A-QGyqZM-_UdQpT-7JPsugWxuLM1Y5QT9WNCrEl4LgA/viewform?usp=header')" class="btn">Seni Musik</button>
-          <button onclick="openExam('https://aplsmalab-svg.github.io/4535m3n/astsfisxii.html')" class="btn btn-nilai">Lihat Nilai Fisika</button>
-          <button onclick="openExam('https://docs.google.com/forms/d/e/1FAIpQLSesEK2DPFzzl9vP-hWGbOXFKEK3eSZWr2DP_AMusYk5CqsCsg/viewform?usp=header')" class="btn">Geografi</button>
-        </div>
-      </div>
-
-      <!-- JAM KE-2 -->
-      <div class="jadwal">
-        <div class="label" onclick="toggle(this)">Jam ke-2</div>
-        <div class="content">
-          <button onclick="openExam('https://docs.google.com/forms/d/e/1FAIpQLSfwQ4G6RWDEECx-M20L18eMGUwKtntM_uMIfBifbz3c6ay_qw/viewform?usp=header')" class="btn">Biologi</button>
-        </div>
-      </div>
-
-      <!-- JAM KE-3 -->
-      <div class="jadwal">
-        <div class="label" onclick="toggle(this)">Jam ke-3</div>
-        <div class="content"></div>
-      </div>
-
-      <!-- UH - REMIDI - LITERASI/NUMERASI (gabungan dari kedua sumber) -->
-      <div class="jadwal">
-        <div class="label" onclick="toggle(this)">UH - REMIDI - Literasi/Numerasi</div>
-        <div class="content">
-          <button onclick="openExam('https://docs.google.com/forms/d/e/1FAIpQLSe4efcne_WXtTo51NqWmcX5uHZl4fj8mtKxXtXtXx7qI93pZA/viewform?usp=header')" class="btn">Kimia</button>
-          <button onclick="openExam('https://docs.google.com/forms/d/e/1FAIpQLSd2zM4iFwVGiCUbmVmTMBOtuYxjbv0XAFwJR64omV6RZoNjPw/viewform?usp=header')" class="btn btn-nilai">Elektromagnet</button>
-          <button onclick="openExam('https://docs.google.com/forms/d/e/1FAIpQLSdBHFNYh2iMi3qQhDO5LS7ltQe_soXQqAtsc1UXaY3fOCqMgw/viewform?usp=header')" class="btn">Elektromagnet</button>
-          <button onclick="openExam('https://docs.google.com/forms/d/e/1FAIpQLSdhqN1s5lbKSwb1VNwzdnYIpxlBfOAzna0NUcwT6mGws02dqA/viewform?usp=header')" class="btn">Sosiologi</button>
-          <button onclick="openExam('https://docs.google.com/forms/d/e/1FAIpQLSeNyH3lpbGetyfVRn4v6NNZuZpXANZrk7T2IaU4rGqjJ2KX1Q/viewform?usp=header')" class="btn">Latihan ASTS-1 Fisika</button>
-          <button onclick="openExam('https://aplsmalab-svg.github.io/4535m3n/latihanfisika.html')" class="btn btn-nilai">Lihat Nilai Latihan ASTS-1</button>
+        <div class="content" style="display:block;">
+          <button onclick="openExam('https://labexam-rho.vercel.app/kelas_xii.html?key=AksesKhususGoogleSites2026')" class="btn">Buka Asesmen Kelas XII</button>
         </div>
       </div>
 
@@ -614,6 +584,9 @@
 
     document.getElementById(tabId).classList.add('active');
     btn.classList.add('active');
+
+    // Sembunyikan navbar saat masuk ke tab kelas (hanya tampil di Home)
+    document.getElementById('mainNavbar').style.display = (tabId === 'homeTab') ? 'flex' : 'none';
   }
 
   function toggle(el) {
