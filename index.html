@@ -56,11 +56,22 @@
       background: #f2f2f7;
     }
 
+    /* MODE BARE (khusus Wayground): tanpa taskbar, tanpa strip berwarna.
+       Spacer safe-area tetap ada (putih) supaya konten tidak tertutup status bar / home indicator. */
+    #appRoot.bare-mode .asm-bottom-bar { display: none; }
+    #appRoot.bare-mode #topInset {
+      height: env(safe-area-inset-top, 0px);
+      background: #ffffff;
+    }
+    #appRoot.bare-mode #bottomInset {
+      background: #ffffff;
+    }
+
     /* Strip gelap di bawah taskbar (area home indicator) */
     #bottomInset {
       flex: none;
       height: env(safe-area-inset-bottom, 0px);
-      background: #1c1c1e;
+      background: #5a5a5a;
     }
 
     #appRoot.exam-mode #topInset {
@@ -503,7 +514,7 @@
       <div class="jadwal">
         <div class="content" style="display:block;">
           <button onclick="openExam('https://labexam-rho.vercel.app/kelas_xii.html?key=AksesKhususGoogleSites2026')" class="btn">Buka Asesmen Kelas XII</button>
-          <button onclick="openExam('https://wayground.com/join/')" class="btn">Wayground</button>
+          <button onclick="openExam('https://wayground.com/join/', true)" class="btn">Wayground</button>
         </div>
       </div>
 
@@ -617,7 +628,7 @@
   }
 
   /* PENGATURAN IFRAME UJIAN */
-  function openExam(url) {
+  function openExam(url, bare) {
     document.getElementById('mainContainer').style.display = 'none';
     const frameContainer = document.getElementById('examFrameContainer');
     const iframe = document.getElementById('examIframe');
@@ -625,13 +636,14 @@
     iframe.src = url;
     frameContainer.style.display = 'block';
     document.getElementById('appRoot').classList.add('exam-mode');
+    document.getElementById('appRoot').classList.toggle('bare-mode', !!bare);
   }
 
   function switchTab(tabId, btn) {
     document.getElementById('examFrameContainer').style.display = 'none';
     document.getElementById('examIframe').src = 'about:blank';
     document.getElementById('mainContainer').style.display = 'block';
-    document.getElementById('appRoot').classList.remove('exam-mode');
+    document.getElementById('appRoot').classList.remove('exam-mode', 'bare-mode');
 
     document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
