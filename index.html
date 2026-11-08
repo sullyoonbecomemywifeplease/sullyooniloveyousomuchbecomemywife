@@ -7,7 +7,8 @@
   <meta name="robots" content="noindex, nofollow, noarchive">
 
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#f2f2f7">
   <meta name="apple-mobile-web-app-title" content="Menu Soal">
 
   <style>
@@ -36,6 +37,12 @@
       padding-top: max(12px, env(safe-area-inset-top));
       padding-bottom: calc(44px + env(safe-area-inset-bottom));
     }
+
+    /* Warna kanvas (area di luar layout viewport, mis. celah di atas home indicator iOS 26)
+       dibuat sama dengan taskbar bawah agar menyatu. Body tetap berwarna terang. */
+    html { background: #c2c7ce; }
+    body { background: #f2f2f7; }
+    html.modal-open { background: #1c1c1e; }
 
     /* FULLSCREEN OVERLAY */
     #fullscreenOverlay {
@@ -603,11 +610,13 @@
     const pwdInput = document.getElementById('quitPassword');
     pwdInput.value = '';
     modal.style.display = 'flex';
+    document.documentElement.classList.add('modal-open');
     setTimeout(() => pwdInput.focus(), 100);
   }
 
   function closeQuitDialog() {
     document.getElementById('quitModal').style.display = 'none';
+    document.documentElement.classList.remove('modal-open');
   }
 
   function submitQuit() {
