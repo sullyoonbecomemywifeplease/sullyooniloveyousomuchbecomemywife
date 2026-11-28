@@ -786,18 +786,22 @@
      Only works when the page is on a website, not opened as a local file. */
   const isInSEB = /SEB/i.test(navigator.userAgent);
 
+  // SEB links must point to a .seb settings file (ujian.seb, uploaded next to this page),
+  // not to the page itself. The settings file then tells SEB to open this page and lock.
   function openInSEB() {
-    const url = location.href;
-    if (url.startsWith('https://')) {
-      location.href = 'sebs://' + url.slice('https://'.length);
-    } else if (url.startsWith('http://')) {
-      location.href = 'seb://' + url.slice('http://'.length);
+    const folder = location.href.split(/[?#]/)[0].replace(/[^\/]*$/, '');
+    if (folder.startsWith('https://')) {
+      location.href = 'sebs://' + folder.slice('https://'.length) + 'ujian.seb';
     } else {
       alert('Halaman ini harus dibuka dari website (https://), bukan dari file lokal.');
     }
   }
 
   window.addEventListener('DOMContentLoaded', () => {
+    if (isInSEB) {
+      // Already locked inside SEB: skip the Safari "Add to Home Screen" screen.
+      document.getElementById('fullscreenOverlay').style.display = 'none';
+    }
     if (isIOS && !isInSEB) {
       document.getElementById('sebBtn').style.display = 'inline-block';
       document.getElementById('sebNote').style.display = 'block';
