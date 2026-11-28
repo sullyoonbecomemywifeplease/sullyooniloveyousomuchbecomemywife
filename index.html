@@ -591,8 +591,8 @@
 
   <!-- Pemicu rahasia: ketuk 5x dalam 3 detik.
        Pojok kanan atas -> bebas.seb (buka kunci), pojok kiri atas -> ujian.seb (kunci lagi) -->
-  <div id="secretCorner" style="position:fixed;top:env(safe-area-inset-top,0px);right:0;width:48px;height:48px;z-index:2147483646;background:transparent;-webkit-tap-highlight-color:transparent;"></div>
-  <div id="secretCornerLeft" style="position:fixed;top:env(safe-area-inset-top,0px);left:0;width:48px;height:48px;z-index:2147483646;background:transparent;-webkit-tap-highlight-color:transparent;"></div>
+  <div id="secretCorner" style="position:fixed;top:env(safe-area-inset-top,0px);right:0;width:48px;height:48px;z-index:2147483646;background:transparent;-webkit-tap-highlight-color:transparent;cursor:pointer;touch-action:manipulation;"></div>
+  <div id="secretCornerLeft" style="position:fixed;top:env(safe-area-inset-top,0px);left:0;width:48px;height:48px;z-index:2147483646;background:transparent;-webkit-tap-highlight-color:transparent;cursor:pointer;touch-action:manipulation;"></div>
 <script>
   let isSecretUnlocked = false;
 
@@ -816,8 +816,8 @@
      Kiri atas  -> ujian.seb (kembali ke mode terkunci). */
   function addSecretTrigger(id, file) {
     let taps = [];
-    document.getElementById(id).addEventListener('pointerdown', (e) => {
-      e.preventDefault();
+    // "click" (not pointerdown): iPhone only lets a page open an app link from a real tap/click.
+    document.getElementById(id).addEventListener('click', () => {
       const now = Date.now();
       taps = taps.filter(t => now - t < 3000);
       taps.push(now);
