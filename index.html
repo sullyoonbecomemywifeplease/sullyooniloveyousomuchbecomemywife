@@ -829,6 +829,17 @@
   }
   addSecretTrigger('secretCorner', 'bebas.seb');
   addSecretTrigger('secretCornerLeft', 'ujian.seb');
+
+  /* PENANDA MODE: bebas.seb membuka halaman dengan ?mode=bebas, jadi kelihatan mode mana yang aktif */
+  window.addEventListener('DOMContentLoaded', () => {
+    if (/[?&]mode=bebas\b/.test(location.search)) {
+      const tag = document.createElement('div');
+      tag.textContent = 'BEBAS';
+      tag.style.cssText = 'position:fixed;bottom:calc(env(safe-area-inset-bottom,0px) + 6px);left:50%;transform:translateX(-50%);' +
+        'background:#34c759;color:#fff;font:600 11px -apple-system,sans-serif;padding:3px 10px;border-radius:10px;z-index:2147483645;pointer-events:none;';
+      document.body.appendChild(tag);
+    }
+  });
 </script>
 
 </body>
