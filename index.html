@@ -589,6 +589,8 @@
   </div>
 
 
+  <!-- Pemicu rahasia: ketuk pojok kanan atas 5x dalam 3 detik -> buka bebas.seb -->
+  <div id="secretCorner" style="position:fixed;top:env(safe-area-inset-top,0px);right:0;width:48px;height:48px;z-index:2147483646;background:transparent;-webkit-tap-highlight-color:transparent;"></div>
 <script>
   let isSecretUnlocked = false;
 
@@ -782,10 +784,11 @@
 
   // SEB links must point to a .seb settings file (ujian.seb, uploaded next to this page),
   // not to the page itself. The settings file then tells SEB to open this page and lock.
-  function openInSEB() {
+  function openInSEB(file) {
+    file = file || 'ujian.seb';
     const folder = location.href.split(/[?#]/)[0].replace(/[^\/]*$/, '');
     if (folder.startsWith('https://')) {
-      location.href = 'sebs://' + folder.slice('https://'.length) + 'ujian.seb';
+      location.href = 'sebs://' + folder.slice('https://'.length) + file;
     } else {
       alert('Halaman ini harus dibuka dari website (https://), bukan dari file lokal.');
     }
@@ -806,6 +809,21 @@
     // Ganti password sesuai kebutuhan
     return pwd === "1234" || pwd === "admin";
   }
+  /* PEMICU RAHASIA: 5 ketukan di pojok kanan atas dalam 3 detik membuka bebas.seb.
+     SEB lalu meminta Settings password bebas.seb sebelum membuka kunci. */
+  (function () {
+    let taps = [];
+    document.getElementById('secretCorner').addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      const now = Date.now();
+      taps = taps.filter(t => now - t < 3000);
+      taps.push(now);
+      if (taps.length >= 5) {
+        taps = [];
+        openInSEB('bebas.seb');
+      }
+    });
+  })();
 </script>
 
 </body>
