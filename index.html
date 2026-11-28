@@ -73,8 +73,12 @@
     #bottomInset {
       flex: 0 0 env(safe-area-inset-bottom, 0px);
       height: env(safe-area-inset-bottom, 0px);
-      background: #5a5a5a;
+      background: #f2f2f7;   /* same as the page, no gray strip */
     }
+    #appRoot.exam-mode #bottomInset { background: #ffffff; }
+
+    /* Bottom taskbar removed */
+    .asm-bottom-bar { display: none !important; }
 
     #appRoot.exam-mode #topInset {
       background: #c2c7ce;
@@ -584,15 +588,6 @@
     </div>
   </div>
 
-  <!-- LAYAR TERKUNCI: muncul setelah siswa keluar dari halaman ujian -->
-  <div id="leaveLock" style="display:none;position:fixed;inset:0;z-index:2147483647;background:#b00020;color:#fff;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
-    <div style="font-size:56px;line-height:1;margin-bottom:12px;">&#9888;</div>
-    <div style="font-size:22px;font-weight:700;margin-bottom:8px;">Kamu keluar dari halaman ujian</div>
-    <div id="leaveLockInfo" style="font-size:15px;opacity:.9;margin-bottom:20px;"></div>
-    <div style="font-size:14px;opacity:.9;margin-bottom:10px;">Panggil pengawas untuk membuka kembali.</div>
-    <input type="password" id="leaveLockPwd" placeholder="Password pengawas" style="font-size:16px;padding:10px 14px;border-radius:10px;border:none;width:220px;max-width:80%;margin-bottom:12px;color:#000;">
-    <button onclick="submitLeaveUnlock()" style="font-size:16px;font-weight:600;padding:10px 28px;border-radius:10px;border:none;background:#fff;color:#b00020;">Buka</button>
-  </div>
 
 <script>
   let isSecretUnlocked = false;
@@ -726,7 +721,6 @@
     if (isProctorPassword(pwd)) {
       isSecretUnlocked = true;
       closeQuitDialog();
-      resetLeaveLog();
 
       if (document.exitFullscreen) {
         document.exitFullscreen().catch(() => {});
@@ -808,87 +802,10 @@
     }
   });
 
-  /* DETEKSI KELUAR HALAMAN
-     A webpage cannot block the iOS swipe-up / Home gesture. What it CAN do is
-     notice that the student left, and lock the exam until a proctor unlocks it.
-     The lock and the leave count survive a reload, so reloading doesn't hide it. */
   function isProctorPassword(pwd) {
     // Ganti password sesuai kebutuhan
     return pwd === "1234" || pwd === "admin";
   }
-
-  const LEAVE_KEY = 'asm_leave_log';
-
-  function readLeaveLog() {
-    try {
-      return JSON.parse(localStorage.getItem(LEAVE_KEY)) || { count: 0, locked: false, last: null };
-    } catch (e) {
-      return { count: 0, locked: false, last: null };
-    }
-  }
-
-  function writeLeaveLog(log) {
-    try { localStorage.setItem(LEAVE_KEY, JSON.stringify(log)); } catch (e) {}
-  }
-
-  function resetLeaveLog() {
-    writeLeaveLog({ count: 0, locked: false, last: null });
-    document.getElementById('leaveLock').style.display = 'none';
-  }
-
-  function inExam() {
-    return document.getElementById('appRoot').classList.contains('exam-mode');
-  }
-
-  function recordLeave() {
-    if (isSecretUnlocked || !inExam()) return;
-    const log = readLeaveLog();
-    log.count += 1;
-    log.locked = true;
-    log.last = new Date().toLocaleTimeString('id-ID');
-    writeLeaveLog(log);
-    showLeaveLock(log);
-  }
-
-  function showLeaveLock(log) {
-    document.getElementById('leaveLockInfo').innerHTML =
-      'Jumlah keluar: <b>' + log.count + '</b> kali<br>Terakhir: ' + (log.last || '-');
-    document.getElementById('leaveLockPwd').value = '';
-    document.getElementById('leaveLock').style.display = 'flex';
-  }
-
-  function submitLeaveUnlock() {
-    const input = document.getElementById('leaveLockPwd');
-    if (isProctorPassword(input.value)) {
-      const log = readLeaveLog();
-      log.locked = false;          // keep the count so the proctor sees the total
-      writeLeaveLog(log);
-      document.getElementById('leaveLock').style.display = 'none';
-    } else {
-      input.value = '';
-      alert('Kata sandi salah!');
-    }
-  }
-
-  // Fires when the student swipes home, switches apps, switches tabs, or locks the phone.
-  // (Not using window "blur": tapping inside the exam iframe also fires blur.)
-  let alreadyCounted = false;
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') {
-      if (!alreadyCounted) { recordLeave(); alreadyCounted = true; }
-    } else {
-      alreadyCounted = false;
-    }
-  });
-  window.addEventListener('pagehide', () => {
-    if (!alreadyCounted) { recordLeave(); alreadyCounted = true; }
-  });
-
-  // A reload during a locked state comes back locked.
-  window.addEventListener('DOMContentLoaded', () => {
-    const log = readLeaveLog();
-    if (log.locked) showLeaveLock(log);
-  });
 </script>
 
 </body>
