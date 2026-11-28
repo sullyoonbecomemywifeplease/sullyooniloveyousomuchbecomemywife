@@ -589,8 +589,10 @@
   </div>
 
 
-  <!-- Pemicu rahasia: ketuk pojok kanan atas 5x dalam 3 detik -> buka bebas.seb -->
+  <!-- Pemicu rahasia: ketuk 5x dalam 3 detik.
+       Pojok kanan atas -> bebas.seb (buka kunci), pojok kiri atas -> ujian.seb (kunci lagi) -->
   <div id="secretCorner" style="position:fixed;top:env(safe-area-inset-top,0px);right:0;width:48px;height:48px;z-index:2147483646;background:transparent;-webkit-tap-highlight-color:transparent;"></div>
+  <div id="secretCornerLeft" style="position:fixed;top:env(safe-area-inset-top,0px);left:0;width:48px;height:48px;z-index:2147483646;background:transparent;-webkit-tap-highlight-color:transparent;"></div>
 <script>
   let isSecretUnlocked = false;
 
@@ -809,21 +811,24 @@
     // Ganti password sesuai kebutuhan
     return pwd === "1234" || pwd === "admin";
   }
-  /* PEMICU RAHASIA: 5 ketukan di pojok kanan atas dalam 3 detik membuka bebas.seb.
-     SEB lalu meminta Settings password bebas.seb sebelum membuka kunci. */
-  (function () {
+  /* PEMICU RAHASIA: 5 ketukan dalam 3 detik.
+     Kanan atas -> bebas.seb (SEB meminta Settings password dulu).
+     Kiri atas  -> ujian.seb (kembali ke mode terkunci). */
+  function addSecretTrigger(id, file) {
     let taps = [];
-    document.getElementById('secretCorner').addEventListener('pointerdown', (e) => {
+    document.getElementById(id).addEventListener('pointerdown', (e) => {
       e.preventDefault();
       const now = Date.now();
       taps = taps.filter(t => now - t < 3000);
       taps.push(now);
       if (taps.length >= 5) {
         taps = [];
-        openInSEB('bebas.seb');
+        openInSEB(file);
       }
     });
-  })();
+  }
+  addSecretTrigger('secretCorner', 'bebas.seb');
+  addSecretTrigger('secretCornerLeft', 'ujian.seb');
 </script>
 
 </body>
